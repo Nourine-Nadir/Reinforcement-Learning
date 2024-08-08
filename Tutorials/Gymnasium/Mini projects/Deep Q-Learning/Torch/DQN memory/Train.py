@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 from utils import plotLearning
-from DQN_q_eval import Agent
+from DQN_q_twoNetworks import Agent
 import json
 
 with open('params.json', 'r') as f:
@@ -17,7 +17,6 @@ lr = params["lr"]
 max_memory = params["max_memory_size"]
 model_path = params["model_path"]
 agent_path = params["agent_path"]
-
 if __name__ == '__main__':
     env = gym.make('LunarLander-v2')
     agent = Agent(gamma=gamma,

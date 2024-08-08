@@ -2,7 +2,7 @@ import matplotlib
 matplotlib.use('TkAgg')  # or 'Qt5Agg' if you prefer Qt
 import matplotlib.pyplot as plt
 import gymnasium as gym
-from DQN_q_eval import Agent
+from DQN_q_twoNetworks import Agent
 import json
 import pickle
 with open('params.json', 'r') as f:
