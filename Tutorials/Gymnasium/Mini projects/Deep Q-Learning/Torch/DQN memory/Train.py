@@ -19,7 +19,6 @@ model_path = params["model_path"]
 
 if __name__ == '__main__':
     env = gym.make('LunarLander-v2')
-    print(env.observation_space.shape[0])
     agent = Agent(gamma=gamma,
                   initial_eps=initial_epsilon,
                   final_eps=final_epsilon,

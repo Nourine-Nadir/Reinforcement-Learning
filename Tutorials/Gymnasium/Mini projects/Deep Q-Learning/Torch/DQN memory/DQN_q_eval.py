@@ -21,7 +21,6 @@ class DQNetwork(nn.Module):
         self.fc3_dims = fc2_dims
         self.nb_actions = nb_actions
 
-        print(f'input {self.input_dims} nb_actions {nb_actions}')
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.fc3 = nn.Linear(self.fc2_dims, self.fc3_dims)
