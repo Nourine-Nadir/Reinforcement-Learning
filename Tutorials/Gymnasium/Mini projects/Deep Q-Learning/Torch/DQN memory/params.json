@@ -1,0 +1,25 @@
+{
+  "name": "dqn-memory",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nourine-Nadir/Reinforcement-Learning.git"
+  },
+  "private": true,
+  "parameters": {
+    "gamma":0.99,
+    "initial_eps":1.0,
+    "final_eps":0.01,
+    "batch_size":64,
+    "n_actions":4,
+    "input_dims":[8],
+    "lr":0.001,
+    "model_path":"DQN_memory_model"
+
+  }
+}
