@@ -5,6 +5,9 @@ import torch as T
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import pickle
+
+
 class DQNetwork(nn.Module):
     def __init__(self,
                  lr,
@@ -27,7 +30,7 @@ class DQNetwork(nn.Module):
         self.fc4 = nn.Linear(self.fc3_dims, self.nb_actions)
 
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
-        self.loss = nn.MSELoss()
+        self.loss = nn.SmoothL1Loss()  # Use Huber loss
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.to(self.device)
 
@@ -62,11 +65,19 @@ class Agent():
         self.final_eps = final_eps
         self.mem_size = max_mem_size
         self.mem_counter = 0
+        self.sequence_length = 32  # You can adjust this value
 
+        self.target_update_frequency = 100
+        self.learn_step_counter = 0
         self.Q_eval = DQNetwork(lr=self.lr,
                                 input_dims=self.input_dims,
                                 nb_actions=n_actions,
-                                fc1_dims=128, fc2_dims=64, fc3_dims=0)
+                                fc1_dims=128, fc2_dims=128, fc3_dims=0)
+        self.Q_target = DQNetwork(lr=self.lr,
+                                  input_dims=self.input_dims,
+                                  nb_actions=n_actions,
+                                  fc1_dims=128, fc2_dims=128, fc3_dims=0)
+
         self.state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
         self.new_state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
         self.action_memory = np.zeros(self.mem_size,
@@ -86,9 +97,11 @@ class Agent():
 
     def choose_action(self, obs):
         if np.random.random() > self.eps:
-            state = T.tensor(np.array([obs])).to(
-                self.Q_eval.device)  # we use the brackets because of the way the DQN is set up
-            actions = self.Q_eval.forward(state)
+            self.Q_eval.eval()  # Set to evaluation mode
+            with T.no_grad():
+                state = T.tensor(np.array([obs])).to(self.Q_eval.device)
+                actions = self.Q_eval.forward(state)
+            self.Q_eval.train()  # Set back to training mode
             action = T.argmax(actions).item()
         else:
             action = np.random.choice(self.action_space)
@@ -113,8 +126,12 @@ class Agent():
 
         action_batch = self.action_memory[batch]
 
-        q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]  # get the values of the actions we took
-        q_next = self.Q_eval.forward(new_state_batch)
+        q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
+        self.Q_target.eval()  # Set to evaluation mode
+        with T.no_grad():
+            q_next = self.Q_target.forward(new_state_batch)
+        self.Q_target.train()  # Set back to training mode
+
         q_next[terminal_batch] = 0.0
 
         q_target = reward_batch + self.gamma * T.max(q_next, dim=1)[0]
@@ -123,10 +140,24 @@ class Agent():
         loss.backward()
         self.Q_eval.optimizer.step()
 
+        self.learn_step_counter += 1
+        if self.learn_step_counter % self.target_update_frequency == 0:
+            self.Q_target.load_state_dict(self.Q_eval.state_dict())
+
         self.eps = max((self.eps - self.eps_decay), self.final_eps)
 
     def save_model(self, PATH):
         T.save(self.Q_eval.state_dict(), PATH)
 
-    def load_model(self, PATH):
-        self.Q_eval.load_state_dict(T.load(PATH))
+    def load_model(self, q_eval_path ):
+        try:
+            self.Q_eval = T.load(q_eval_path, map_location=self.Q_eval.device)
+        except FileNotFoundError:
+            print(f"Error: Could not find model files at {q_eval_path }")
+        except RuntimeError as e:
+            print(f"Error loading model: {e}")
+
+
+    def save_agent(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self, f)

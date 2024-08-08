@@ -16,11 +16,13 @@ input_dims = params["input_dims"]
 lr = params["lr"]
 max_memory = params["max_memory_size"]
 model_path = params["model_path"]
+agent_path = params["agent_path"]
 
 if __name__ == '__main__':
     env = gym.make('LunarLander-v2')
     agent = Agent(gamma=gamma,
                   initial_eps=initial_epsilon,
+                  eps_decay=epsilon_decay,
                   final_eps=final_epsilon,
                   batch_size=batch_size,
                   n_actions=n_actions,
@@ -34,9 +36,9 @@ if __name__ == '__main__':
         score = 0
         done = False
         obs, info = env.reset()
-        if avg_score > -60:
-            j = i
-            break
+        # if avg_score >-40 :
+        #     j=i
+        #     break
         while not done:
             action = agent.choose_action(obs)
             obs_, reward, terminated, truncated, info = env.step(action)
@@ -52,7 +54,7 @@ if __name__ == '__main__':
             avg_score = np.mean(scores[-100:])
             print('Episode', i, 'score %.1f avg score %.1f epsilon %.3f' % (score, avg_score, agent.eps))
 
-    agent.save_model(model_path)
+    agent.save_agent('agent_model')
     x = [i + 1 for i in range(j)]
     filename = 'lunar_lander.png'
     plotLearning(x, scores, eps_history, filename)
