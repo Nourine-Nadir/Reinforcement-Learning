@@ -14,11 +14,13 @@
   "parameters": {
     "gamma":0.99,
     "initial_eps":1.0,
+    "eps_decay":1e-4,
     "final_eps":0.01,
     "batch_size":64,
     "n_actions":4,
     "input_dims":[8],
     "lr":0.001,
+    "max_memory_size": 1000,
     "model_path":"DQN_memory_model"
 
   }

@@ -7,6 +7,17 @@ import json
 
 with open('params.json', 'r') as f:
     params = json.load(f)["parameters"]
+gamma = params["gamma"]
+initial_epsilon = params["initial_eps"]
+final_epsilon = params["final_eps"]
+epsilon_decay = params["eps_decay"]
+batch_size = params["batch_size"]
+n_actions = params["n_actions"]
+input_dims = params["input_dims"]
+lr = params["lr"]
+max_memory = params["max_memory_size"]
+model_path = params["model_path"]
+
 
 env = gym.make('LunarLander-v2', render_mode='rgb_array')
 obs, info = env.reset()
@@ -19,13 +30,13 @@ actions = ['nothing', 'Left', 'main', 'Right']
 rewards = 0
 num_epochs = 1000
 agent = Agent(gamma=params['gamma'],
-                  initial_eps=params['initial_eps'],
-                  final_eps=params['final_eps'],
-                  batch_size=params['batch_size'],
-                  n_actions=params['n_actions'],
-                  input_dims=params['input_dims'],
-                  lr=params['lr'])
-agent.load_model(params['model_path'])
+                  initial_eps=initial_epsilon,
+                  final_eps=final_epsilon,
+                  batch_size=batch_size,
+                  n_actions=n_actions,
+                  input_dims=input_dims,
+                  lr=lr)
+agent.load_model(model_path)
 for step in range(num_epochs):
     obs, info = env.reset()
     done = False
