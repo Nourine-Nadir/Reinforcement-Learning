@@ -5,9 +5,13 @@ import torch as T
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import pickle
+import pickle,json
 
-
+with open('params.json', 'r') as f:
+    params = json.load(f)["parameters"]
+fc1_dim = params['layer1_dims']
+fc2_dim = params['layer2_dims']
+fc3_dim = params['layer3_dims']
 class DQNetwork(nn.Module):
     def __init__(self,
                  lr,
@@ -72,11 +76,11 @@ class Agent():
         self.Q_eval = DQNetwork(lr=self.lr,
                                 input_dims=self.input_dims,
                                 nb_actions=n_actions,
-                                fc1_dims=128, fc2_dims=128, fc3_dims=0)
+                                fc1_dims=fc1_dim, fc2_dims=fc2_dim, fc3_dims=fc3_dim)
         self.Q_target = DQNetwork(lr=self.lr,
                                   input_dims=self.input_dims,
                                   nb_actions=n_actions,
-                                  fc1_dims=128, fc2_dims=128, fc3_dims=0)
+                                  fc1_dims=fc1_dim, fc2_dims=fc2_dim, fc3_dims=fc3_dim)
 
         self.state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
         self.new_state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
