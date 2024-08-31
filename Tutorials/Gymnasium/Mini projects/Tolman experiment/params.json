@@ -1,0 +1,23 @@
+{
+  "name": "tolman-experiment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nourine-Nadir/Reinforcement-Learning.git"
+  },
+  "private": true,
+  "parameters": {
+    "learning_rate": 1.0,
+    "n_episodes": 10000,
+    "initial_eps": 1,
+    "eps_decay": 0.999,
+    "final_eps": 0.05,
+    "agent_path":"agent_model"
+
+  }
+}
