@@ -148,7 +148,7 @@ class Agent():
         if self.learn_step_counter % self.target_update_frequency == 0:
             self.Q_target.load_state_dict(self.Q_eval.state_dict())
 
-        self.eps = max((self.eps - self.eps_decay), self.final_eps)
+        self.eps = max((self.eps - self.eps_decay), self.final_eps) # we used linear decay because it takes more iterations to reach null value
 
     def save_model(self, PATH):
         T.save(self.Q_eval.state_dict(), PATH)
