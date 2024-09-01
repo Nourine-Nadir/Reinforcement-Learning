@@ -28,7 +28,7 @@ if __name__ == '__main__':
                   input_dims=input_dims,
                   lr=lr)
     scores, eps_history = [], []
-    n_episodes = 1000
+    n_episodes = 900
     j = n_episodes
     avg_score = -9999
     for i in range(n_episodes):
