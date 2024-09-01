@@ -35,8 +35,12 @@ class Experiment():
         self.rewards = 0
         if self.group == 3 or self.group == 2 :
             self.env.unwrapped.set_goalReward(0)
-            self.env.unwrapped.set_stepPenalty(0)
-            self.env.unwrapped.set_stuckPenalty(0)
+            self.env.unwrapped.set_stepPenalty(-1)
+            self.env.unwrapped.set_stuckPenalty(-1)
+
+        print(self.env.unwrapped.goal_reward)
+        print(self.env.unwrapped.step_penalty)
+        print(self.env.unwrapped.stuck_penalty)
         for episode in tqdm(range(self.n_episodes)):
 
             obs, info = self.env.reset()
@@ -52,7 +56,7 @@ class Experiment():
 
                 # update if the environment is done and the current obs
                 if self.group ==3:
-                    if episode ==800 :
+                    if episode ==8000 :
                         self.env.unwrapped.set_goalReward(100)
                         self.env.unwrapped.set_stepPenalty(-1)
                         self.env.unwrapped.set_stuckPenalty(-1)
@@ -61,7 +65,7 @@ class Experiment():
 
             self.agent.decay_epsilon()
 
-        self.agent.save_agent(self.agent_path)
+        self.agent.save_agent(self.agent_path+' group'+str(self.group))
     def Plot_save(self,rolling_length=50):
 
         fig, axs = plt.subplots(ncols=3, figsize=(12, 5))

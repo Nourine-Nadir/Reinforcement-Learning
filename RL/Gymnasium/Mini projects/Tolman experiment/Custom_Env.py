@@ -1,5 +1,5 @@
 from gymnasium.envs.toy_text.frozen_lake import FrozenLakeEnv
-
+import numpy as np
 class CustomFrozenLake(FrozenLakeEnv):
     def __init__(self, goal_reward=100, hole_penalty=-50, step_penalty=-1 ,stuck_penalty=-1, **kwargs):
         super().__init__(**kwargs)
@@ -36,3 +36,12 @@ class CustomFrozenLake(FrozenLakeEnv):
     def set_stuckPenalty(self, penalty):
         self.stuck_penalty = penalty
         return
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+        self.s = self.get_random_initial_state()
+        return self.s, {}
+
+    def get_random_initial_state(self):
+        valid_states = [i for i in range(64)]
+        return np.random.choice(valid_states)

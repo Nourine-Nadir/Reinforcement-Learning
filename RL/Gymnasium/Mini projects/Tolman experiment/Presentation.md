@@ -8,4 +8,4 @@ in Reinforcement Learning.
 1st notice I had is that the reason of this rapid learning is the big training error occurring after getting null reward for long time so the difference
 between these first rewards and the new ones is big so the gradient converge faster.
 
-2nd
+2nd reason 
