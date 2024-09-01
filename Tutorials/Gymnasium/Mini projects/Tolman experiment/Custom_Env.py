@@ -27,3 +27,12 @@ class CustomFrozenLake(FrozenLakeEnv):
 
 
         return state, reward, terminated, truncated, info
+    def set_goalReward(self, reward):
+        self.goal_reward = reward
+        return
+    def set_stepPenalty(self, penalty):
+        self.step_penalty = penalty
+        return
+    def set_stuckPenalty(self, penalty):
+        self.stuck_penalty = penalty
+        return
