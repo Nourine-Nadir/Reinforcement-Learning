@@ -1,6 +1,6 @@
 from collections import defaultdict
 import numpy as np
-import pickle
+import pickle,os
 
 class PicklableDefaultDict(defaultdict):
     def __init__(self, default_factory=None):
@@ -58,6 +58,10 @@ class Agent():
         self.epsilon = max(self.final_epsilon, self.epsilon * self.epsilon_decay)
 
     def save_agent(self, path):
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
         with open(path, 'wb') as f:
             pickle.dump(self, f)
     def load_agent(self, path):

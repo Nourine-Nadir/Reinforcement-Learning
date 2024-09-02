@@ -13,11 +13,11 @@
   "private": true,
   "parameters": {
     "learning_rate": 1.0,
-    "n_episodes": 10000,
+    "n_episodes": 100,
     "initial_eps": 1,
     "eps_decay": 0.999,
     "final_eps": 0.05,
-    "agent_path":"agent_model"
+    "agent_path":"models/agent_model"
 
   }
 }

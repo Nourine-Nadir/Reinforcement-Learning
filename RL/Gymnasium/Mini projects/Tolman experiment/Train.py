@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Custom_Env import CustomFrozenLake
 from Q_value_Agent import Agent
-import pickle,json
+import pickle,json,os
 from tqdm import tqdm
 import gymnasium as gym
 
@@ -56,7 +56,7 @@ class Experiment():
 
                 # update if the environment is done and the current obs
                 if self.group ==3:
-                    if episode ==8000 :
+                    if episode ==9000 :
                         self.env.unwrapped.set_goalReward(100)
                         self.env.unwrapped.set_stepPenalty(-1)
                         self.env.unwrapped.set_stuckPenalty(-1)
@@ -66,6 +66,8 @@ class Experiment():
             self.agent.decay_epsilon()
 
         self.agent.save_agent(self.agent_path+' group'+str(self.group))
+
+
     def Plot_save(self,rolling_length=50):
 
         fig, axs = plt.subplots(ncols=3, figsize=(12, 5))
@@ -93,4 +95,8 @@ class Experiment():
         )
         axs[2].plot(range(len(training_error_moving_average)), training_error_moving_average)
         plt.tight_layout()
-        plt.savefig('group nb '+str(self.group)+ '.png')
+
+        if not os.path.exists('figs'):
+            os.makedirs('figs')
+
+        plt.savefig('figs/group nb '+str(self.group)+ '.png')
