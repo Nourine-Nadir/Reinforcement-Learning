@@ -50,7 +50,7 @@ if __name__ == '__main__':
             avg_score = np.mean(scores[-100:])
             print('Episode', i, 'score %.1f avg score %.1f epsilon %.3f' % (score, avg_score, agent.eps))
 
-    agent.save_agent('agent_model')
+    agent.save_agent(agent_path)
     x = [i + 1 for i in range(j)]
     filename = 'lunar_lander.png'
     plotLearning(x, scores, eps_history, filename)

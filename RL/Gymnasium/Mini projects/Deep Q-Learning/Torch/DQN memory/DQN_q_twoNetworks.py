@@ -5,7 +5,7 @@ import torch as T
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import pickle,json
+import pickle,json,os
 
 with open('params.json', 'r') as f:
     params = json.load(f)["parameters"]
@@ -163,5 +163,8 @@ class Agent():
 
 
     def save_agent(self, path):
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         with open(path, 'wb') as f:
             pickle.dump(self, f)

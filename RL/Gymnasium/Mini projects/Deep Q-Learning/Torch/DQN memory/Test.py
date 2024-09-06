@@ -30,15 +30,7 @@ action_text = ax.text(510, 20, '', color='white', fontsize=12, bbox=dict(facecol
 actions = ['nothing', 'Left', 'main', 'Right']
 rewards = 0
 num_epochs = 1000
-# agent = Agent(gamma=gamma,
-#                   initial_eps=initial_epsilon,
-#                   eps_decay=epsilon_decay,
-#                   final_eps=final_epsilon,
-#                   batch_size=batch_size,
-#                   n_actions=n_actions,
-#                   input_dims=input_dims,
-#                   lr=lr)
-# agent.load_model(model_path)
+
 with open(agent_path, 'rb') as f:
     agent = pickle.load(f)
 for step in range(num_epochs):
@@ -49,7 +41,7 @@ for step in range(num_epochs):
         next_obs, reward, terminated, truncated, info = env.step(action)
 
         rewards += reward
-        print(reward)
+        # print(reward)
         frame = env.render()
         img.set_data(frame)
         action_text.set_text(f'Step: {actions[action]}')
