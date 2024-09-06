@@ -8,4 +8,4 @@ def run_experiments(groups):
     return
 if __name__ == "__main__":
 
-    run_experiments([1])
+    run_experiments([1,2,3])

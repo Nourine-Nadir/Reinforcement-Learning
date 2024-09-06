@@ -13,7 +13,7 @@
   "private": true,
   "parameters": {
     "learning_rate": 1.0,
-    "n_episodes": 1000,
+    "n_episodes": 500,
     "initial_eps": 1,
     "eps_decay": 0.999,
     "final_eps": 0.05,
