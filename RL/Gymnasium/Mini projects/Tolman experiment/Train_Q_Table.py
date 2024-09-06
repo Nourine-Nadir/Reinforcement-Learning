@@ -35,12 +35,9 @@ class Experiment():
         self.rewards = 0
         if self.group == 3 or self.group == 2 :
             self.env.unwrapped.set_goalReward(0)
-            self.env.unwrapped.set_stepPenalty(-1)
+            self.env.unwrapped.set_stepPenalty(0)
             self.env.unwrapped.set_stuckPenalty(-1)
 
-        print(self.env.unwrapped.goal_reward)
-        print(self.env.unwrapped.step_penalty)
-        print(self.env.unwrapped.stuck_penalty)
         for episode in tqdm(range(self.n_episodes)):
 
             obs, info = self.env.reset()
@@ -56,7 +53,7 @@ class Experiment():
 
                 # update if the environment is done and the current obs
                 if self.group ==3:
-                    if episode ==9000 :
+                    if episode ==800 :
                         self.env.unwrapped.set_goalReward(100)
                         self.env.unwrapped.set_stepPenalty(-1)
                         self.env.unwrapped.set_stuckPenalty(-1)
@@ -65,7 +62,7 @@ class Experiment():
 
             self.agent.decay_epsilon()
 
-        self.agent.save_agent(self.agent_path+' group'+str(self.group))
+        self.agent.save_agent(self.agent_path+'Q_Table group '+str(self.group))
 
 
     def Plot_save(self,rolling_length=50):
@@ -96,7 +93,10 @@ class Experiment():
         axs[2].plot(range(len(training_error_moving_average)), training_error_moving_average)
         plt.tight_layout()
 
-        if not os.path.exists('figs'):
-            os.makedirs('figs')
-
-        plt.savefig('figs/group nb '+str(self.group)+ '.png')
+        if not os.path.exists('figs/Q-Table'):
+            os.makedirs('figs/Q-Table')
+        try:
+            plt.savefig('figs/Q-Table/group nb '+str(self.group)+ '.png')
+            print('File saved correctly')
+        except:
+            print('Error saving figure')

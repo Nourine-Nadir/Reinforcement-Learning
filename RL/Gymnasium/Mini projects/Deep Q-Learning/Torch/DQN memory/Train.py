@@ -3,41 +3,38 @@ import numpy as np
 from utils import plotLearning
 from DQN_q_twoNetworks import Agent
 import json
+from tqdm import tqdm
 
 with open('params.json', 'r') as f:
     params = json.load(f)["parameters"]
-gamma = params["gamma"]
-initial_epsilon = params["initial_eps"]
-final_epsilon = params["final_eps"]
-epsilon_decay = params["eps_decay"]
-batch_size = params["batch_size"]
-n_actions = params["n_actions"]
-input_dims = params["input_dims"]
-lr = params["lr"]
-max_memory = params["max_memory_size"]
-model_path = params["model_path"]
-agent_path = params["agent_path"]
+
+nb_episodes, gamma, initial_eps, eps_decay, \
+    final_eps, batch_size , n_actions, input_dims, \
+    lr,max_memory_size,model_path,agent_path, \
+    layer1_dims, layer2_dims, layer3_dims, \
+   = \
+    (params[key] for key in
+        list(params.keys())
+    )
+
 if __name__ == '__main__':
     env = gym.make('LunarLander-v2')
     agent = Agent(gamma=gamma,
-                  initial_eps=initial_epsilon,
-                  eps_decay=epsilon_decay,
-                  final_eps=final_epsilon,
+                  initial_eps=initial_eps,
+                  eps_decay=eps_decay,
+                  final_eps=final_eps,
                   batch_size=batch_size,
                   n_actions=n_actions,
                   input_dims=input_dims,
                   lr=lr)
     scores, eps_history = [], []
-    n_episodes = 900
-    j = n_episodes
+    j = nb_episodes
     avg_score = -9999
-    for i in range(n_episodes):
+    for i in tqdm(range(nb_episodes)):
         score = 0
         done = False
         obs, info = env.reset()
-        # if avg_score >-40 :
-        #     j=i
-        #     break
+
         while not done:
             action = agent.choose_action(obs)
             obs_, reward, terminated, truncated, info = env.step(action)
