@@ -53,7 +53,7 @@ class Experiment():
 
                 # update if the environment is done and the current obs
                 if self.group ==3:
-                    if episode ==800 :
+                    if episode ==2800 :
                         self.env.unwrapped.set_goalReward(100)
                         self.env.unwrapped.set_stepPenalty(-1)
                         self.env.unwrapped.set_stuckPenalty(-1)

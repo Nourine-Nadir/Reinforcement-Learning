@@ -67,7 +67,7 @@ class Agent():
         self.Q_eval = DQNetwork(lr=self.lr,
                                 input_dims=self.input_dims,
                                 nb_actions=n_actions,
-                                fc1_dims=16, fc2_dims=16, fc3_dims=-1)
+                                fc1_dims=8, fc2_dims=16, fc3_dims=-1)
         self.state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
         self.new_state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
         self.action_memory = np.zeros(self.mem_size,

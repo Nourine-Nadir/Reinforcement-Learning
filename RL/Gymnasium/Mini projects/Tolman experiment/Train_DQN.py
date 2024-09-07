@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Custom_Env import CustomFrozenLake
-from DQN_agent import Agent
+from TwoDQN_agent import Agent
 import pickle,json,os
 from tqdm import tqdm
 import gymnasium as gym
@@ -52,7 +52,7 @@ class Experiment():
                 self.agent.store_transition(obs, action, reward, obs_, done)
                 self.agent.learn()
                 if self.group ==3:
-                    if episode ==400 :
+                    if episode ==2800 :
                         self.env.unwrapped.set_goalReward(100)
                         self.env.unwrapped.set_stepPenalty(-1)
                         self.env.unwrapped.set_stuckPenalty(-1)

@@ -15,7 +15,7 @@ with open('params.json', 'r') as f:
     params = json.load(f)['parameters']
 
 
-agent_path = params['agent_path']+ ' group'+ str(1)
+agent_path = params['agent_path']+'Q_Table group '+str(1)
 with open(agent_path, 'rb') as f:
     agent = pickle.load(f)
 

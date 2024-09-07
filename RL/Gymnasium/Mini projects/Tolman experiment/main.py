@@ -1,5 +1,5 @@
-# from Train_Q_Table import Experiment
-from Train_DQN import Experiment
+from Train_Q_Table import Experiment
+# from Train_DQN import Experiment
 def run_experiments(groups):
     for group in groups:
         let = Experiment(group=group)
