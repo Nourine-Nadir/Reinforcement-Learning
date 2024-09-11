@@ -82,8 +82,7 @@ class Agent():
                                   nb_actions=n_actions,
                                   fc1_dims=fc1_dim, fc2_dims=fc2_dim, fc3_dims=fc3_dim)
 
-        self.state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
-        self.new_state_memory = np.zeros((self.mem_size, *self.input_dims), dtype=np.float32)
+        self.state_memory = np.zeros((2,self.mem_size, *self.input_dims), dtype=np.float32)
         self.action_memory = np.zeros(self.mem_size,
                                       dtype=np.int32)  # set of integers because our actions belong to a discrete space
         self.reward_memory = np.zeros(self.mem_size, dtype=np.float32)
@@ -91,8 +90,8 @@ class Agent():
 
     def store_transition(self, state, action, reward, state_, done):  # sate_ : new state
         index = self.mem_counter % self.mem_size
-        self.state_memory[index] = state
-        self.new_state_memory[index] = state_
+        self.state_memory[0][index] = state
+        self.state_memory[1][index] = state_
         self.action_memory[index] = action
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
@@ -120,11 +119,10 @@ class Agent():
 
         max_mem = min(self.mem_size, self.mem_counter)
         batch = np.random.choice(max_mem, size=self.batch_size, replace=False)
-
         batch_index = np.arange(self.batch_size, dtype=np.int32)
 
-        state_batch = T.tensor(self.state_memory[batch]).to(self.Q_eval.device)
-        new_state_batch = T.tensor(self.new_state_memory[batch]).to(self.Q_eval.device)
+        state_batch = T.tensor(self.state_memory[0][batch]).to(self.Q_eval.device)
+        new_state_batch = T.tensor(self.state_memory[1][batch]).to(self.Q_eval.device)
         reward_batch = T.tensor(self.reward_memory[batch]).to(self.Q_eval.device)
         terminal_batch = T.tensor(self.terminal_memory[batch]).to(self.Q_eval.device)
 
@@ -137,7 +135,6 @@ class Agent():
         self.Q_target.train()  # Set back to training mode
 
         q_next[terminal_batch] = 0.0
-
         q_target = reward_batch + self.gamma * T.max(q_next, dim=1)[0]
 
         loss = self.Q_eval.loss(q_target, q_eval).to(self.Q_eval.device)

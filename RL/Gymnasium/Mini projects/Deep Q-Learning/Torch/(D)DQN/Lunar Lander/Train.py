@@ -29,7 +29,6 @@ if __name__ == '__main__':
                   lr=lr)
     scores, eps_history = [], []
     j = nb_episodes
-    avg_score = -9999
     for i in tqdm(range(nb_episodes)):
         score = 0
         done = False
