@@ -75,7 +75,6 @@ class Agent(object):
         if random.random() < self.epsilon:
             action = random.choice(self.action_space)
         else:
-            print([obs])
             state = np.array([obs], copy=False, dtype=np.float32)
             action = np.argmax(self.Q_eval.predict(state,verbose=0))
 
