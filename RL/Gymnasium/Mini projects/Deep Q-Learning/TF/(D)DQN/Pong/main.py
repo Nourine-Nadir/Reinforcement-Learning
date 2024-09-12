@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     for i in tqdm(range(num_games)):
         score = 0
-        observation = env.reset()
+        observation,info = env.reset()
         done = False
         while not done:
             action = agent.choose_action(observation)
