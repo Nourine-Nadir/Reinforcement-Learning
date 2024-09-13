@@ -9,18 +9,31 @@ with open('params.json', 'r') as f:
 num_games, gamma, initial_eps, eps_decay, \
     final_eps, batch_size, n_actions, input_dims, \
     lr, max_memory_size, model_path, Q_eval_path, Q_target_path, agent_path, \
-    layer1_dims, layer2_dims, layer3_dims, update_freq \
+    layer1_nodes, layer2_nodes, layer3_nodes, update_freq \
     = \
     (params[key] for key in
      list(params.keys())
      )
+input_dims = (input_dims['nb_images'], input_dims['height'], input_dims['width'])
 
 if __name__ == '__main__':
     env = make_env(env_name='PongNoFrameskip-v4')
     load_checkpoint = False
     best_score = -21
-
-    agent = Agent()
+    print('fiinal:',final_eps)
+    agent = Agent(update_freq=update_freq,
+                 input_dims=input_dims,
+                  layer1_nodes=layer1_nodes,
+                  n_actions=n_actions,
+                  lr=lr,
+                  epsilon=initial_eps,
+                  eps_decay=eps_decay,
+                  eps_final=final_eps,
+                  gamma=gamma,
+                  mem_size=max_memory_size,
+                  batch_size=batch_size,
+                  q_eval_filename=Q_eval_path,
+                  q_target_filename=Q_target_path)
 
     if load_checkpoint:
         agent.load_models()
@@ -44,6 +57,7 @@ if __name__ == '__main__':
                 agent.store_transition(observation, action, reward,
                                        observation_, int(done))
                 agent.learn()
+                agent.update_epsilon()
             else:
                 env.render()
             observation = observation_
@@ -52,7 +66,7 @@ if __name__ == '__main__':
         print('score:', scores)
         avg_score = np.mean(scores[-100:])
         print('episodes', i, 'score', score, 'average score %.2f' % avg_score,
-              'epsilon %.2f' % agent.epsilon , 'steps', n_steps)
+              'epsilon %.2f'% agent.epsilon , 'steps', n_steps)
 
         if avg_score > best_score:
             agent.save_models()

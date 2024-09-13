@@ -12,7 +12,7 @@
   },
   "private": true,
   "parameters": {
-    "num_games": 250,
+    "num_games": 500,
     "gamma":0.99,
     "initial_eps":1.0,
     "eps_decay":1e-5,
@@ -30,10 +30,10 @@
     "Q_eval_path":"models/Q_eval_model",
     "Q_target_path":"models/Q_target_model",
     "agent_path": "models/agent_model",
-    "layer1_dims": 512,
-    "layer2_dims": 64,
-    "layer3_dims": 64,
-    "update_freq": 1000
+    "layer1_nodes": 512,
+    "layer2_nodes": 64,
+    "layer3_nodes": 64,
+    "update_freq": 100
 
   }
 }
