@@ -19,9 +19,7 @@ num_games, gamma, initial_eps, eps_decay, \
 input_shape = (input_shape['nb_images'], input_shape['height'], input_shape['width'])
 
 if __name__ == '__main__':
-    env = make_env(env_name='PongNoFrameskip-v4')
-    load_checkpoint = False
-    best_score = -21
+    load_checkpoint = True
     agent = Agent(update_freq=update_freq,
                   input_shape=input_shape,
                   layer1_nodes=layer1_nodes,
@@ -35,9 +33,11 @@ if __name__ == '__main__':
                   batch_size=batch_size,
                   q_eval_filename=Q_eval_path,
                   q_target_filename=Q_target_path)
-
     if load_checkpoint:
-        agent.load_models(Q_eval_path, Q_target_path)
+        agent.load_models()
+        agent.epsilon = final_eps
+    env = make_env(env_name='PongNoFrameskip-v4', render_mode='human')
+    best_score = -21
 
     scores, eps_history = [], []
     n_steps = 0
@@ -57,6 +57,7 @@ if __name__ == '__main__':
             score += reward
             n_steps += 1
             if not load_checkpoint:
+                # pass
                 agent.store_transition(observation, action, reward,
                                        observation_, int(done))
                 agent.learn()
@@ -73,7 +74,7 @@ if __name__ == '__main__':
 
         if avg_score > best_score:
             print('avg score %.2f better than the best score %.2f' % (avg_score, best_score))
-            agent.save_models(Q_eval_path, Q_target_path)
+            agent.save_models()
             best_score = avg_score
 
         eps_history.append(agent.epsilon)

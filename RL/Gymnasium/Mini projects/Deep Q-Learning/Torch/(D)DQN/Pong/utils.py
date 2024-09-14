@@ -111,8 +111,8 @@ class BufferWrapper(gym.ObservationWrapper):
         self.buffer[-1] = observation
         return self.buffer
 
-def make_env(env_name):
-    env = gym.make(env_name)
+def make_env(env_name, render_mode=None):
+    env = gym.make(env_name, render_mode=render_mode)
     env = SkipEnv(env)
     env = PreProcessFrame(env)
     env = MoveImgChannel(env)  # It is crucial to move the image channel to the 0th dim before the BufferWrapepr so it can stack images
