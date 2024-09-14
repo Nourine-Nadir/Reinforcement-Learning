@@ -9,21 +9,21 @@ with open('params.json', 'r') as f:
     params = json.load(f)["parameters"]
 
 num_games, gamma, initial_eps, eps_decay, \
-    final_eps, batch_size, n_actions, input_dims, \
+    final_eps, batch_size, n_actions, input_shape, \
     lr, max_memory_size, model_path, Q_eval_path, Q_target_path, agent_path, \
     layer1_nodes, layer2_nodes, layer3_nodes, update_freq \
     = \
     (params[key] for key in
      list(params.keys())
      )
-input_dims = (input_dims['nb_images'], input_dims['height'], input_dims['width'])
+input_shape = (input_shape['nb_images'], input_shape['height'], input_shape['width'])
 
 if __name__ == '__main__':
     env = make_env(env_name='PongNoFrameskip-v4')
     load_checkpoint = False
     best_score = -21
     agent = Agent(update_freq=update_freq,
-                  input_dims=input_dims,
+                  input_shape=input_shape,
                   layer1_nodes=layer1_nodes,
                   n_actions=n_actions,
                   lr=lr,

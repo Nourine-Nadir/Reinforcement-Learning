@@ -7,7 +7,6 @@ import torch.optim as optim
 class DQNetwork(nn.Module):
     def __init__(self, lr, n_actions, input_dims, fc1_dims):
         super(DQNetwork, self).__init__()
-
         self.conv1 = nn.Conv2d(in_channels=input_dims[0], out_channels=32,
                                kernel_size=8, stride=4)
         self.conv2 = nn.Conv2d(in_channels=32, out_channels=64,

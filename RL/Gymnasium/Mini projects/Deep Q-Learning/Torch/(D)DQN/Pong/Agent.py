@@ -1,5 +1,5 @@
 import json
-# from Replay_Buffer import ReplayBuffer
+from Replay_Buffer import ReplayBuffer
 from Network import DQNetwork
 import torch as T
 import torch.nn as nn
@@ -15,7 +15,7 @@ import os
 class Agent(object):
     def __init__(self,
                  update_freq: int,
-                 input_dims: tuple,
+                 input_shape: tuple,
                  layer1_nodes: int,
                  epsilon: float,
                  n_actions: int,
@@ -35,7 +35,7 @@ class Agent(object):
         self.q_eval_filename = q_eval_filename
         self.q_target_filename = q_target_filename
         self.action_space = [i for i in range(n_actions)]
-        self.input_dims = input_dims
+        self.input_shape = input_shape
         self.lr = lr
         self.gamma = gamma
         self.epsilon = epsilon
@@ -47,39 +47,25 @@ class Agent(object):
         self.target_update_freq = update_freq
         self.layer1_nodes = layer1_nodes
 
-        self.mem_size = 2500
-        self.mem_cntr = 0
         self.batch_size = batch_size
 
-        self.state_memories = np.zeros((2, self.mem_size, *input_dims),  # 2 for cuurent and next state memory
-                                       dtype=np.float32)
-        self.action_memory = np.zeros(self.mem_size, dtype=np.int32)
-        self.reward_memory = np.zeros(self.mem_size, dtype=np.float32)
-        self.terminal_memory = np.zeros(self.mem_size, dtype=np.bool_)
         self.Q_eval = DQNetwork(lr=self.lr,
                                 n_actions=n_actions,
-                                input_dims=self.input_dims,
+                                input_dims=self.input_shape,
                                 fc1_dims=self.layer1_nodes)
 
         self.Q_target = DQNetwork(lr=self.lr,
                                   n_actions=n_actions,
-                                  input_dims=self.input_dims,
+                                  input_dims=self.input_shape,
                                   fc1_dims=self.layer1_nodes)
 
-    def store_transition(self, state, action, reward, state_, done):
-        # print('state',state.shape)
-        # print('state',state_.shape)
-        index = self.mem_cntr % self.mem_size
-        self.state_memories[0][index] = state
-        self.state_memories[1][index] = state_
-        self.action_memory[index] = action
-        self.reward_memory[index] = reward
-        self.terminal_memory[index] = done
+        self.memory = ReplayBuffer(self.mem_size, self.input_shape, self.batch_size, self.Q_eval)
 
-        self.mem_cntr += 1
 
     os.environ['TF_DATA_EXPERIMENTAL_SLACK'] = '0'
 
+    def store_transition(self, state, action, reward, next_state, done):
+        self.memory.store_transition(state, action, reward, next_state, done)
     def replace_target_network(self):
         # print(self.learn_step)
         if self.learn_step != 0 and (self.learn_step % self.target_update_freq) == 0:
@@ -99,41 +85,33 @@ class Agent(object):
         return action
 
     def learn(self):
-        if self.mem_cntr < self.batch_size:
-            return
+        if self.memory.mem_cntr > self.batch_size:
+            batch_index, state_batch, action_batch, reward_batch, new_state_batch, terminal_batch, self.Q_eval = self.memory.sample_buffer(self.batch_size)
 
-        self.Q_eval.optimizer.zero_grad()
 
-        max_mem = min(self.mem_size, self.mem_cntr)
-        batch = np.random.choice(max_mem, size=self.batch_size, replace=False)
-        batch_index = np.arange(self.batch_size, dtype=np.int32)
+            self.Q_eval.optimizer.zero_grad()
 
-        state_batch = T.tensor(self.state_memories[0][batch]).to(self.Q_eval.device)
-        new_state_batch = T.tensor(self.state_memories[1][batch]).to(self.Q_eval.device)
-        reward_batch = T.tensor(self.reward_memory[batch]).to(self.Q_eval.device)
-        terminal_batch = T.tensor(self.terminal_memory[batch]).to(self.Q_eval.device)
 
-        action_batch = self.action_memory[batch]
 
-        q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
-        self.Q_target.eval()  # Set to evaluation mode
-        with T.no_grad():
-            q_next = self.Q_target.forward(new_state_batch)
-        self.Q_target.train()  # Set back to training mode
+            q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
+            self.Q_target.eval()  # Set to evaluation mode
+            with T.no_grad():
+                q_next = self.Q_target.forward(new_state_batch)
+            self.Q_target.train()  # Set back to training mode
 
-        q_next[terminal_batch] = 0.0
-        q_target = reward_batch + self.gamma * T.max(q_next, dim=1)[0]
+            q_next[terminal_batch] = 0.0
+            q_target = reward_batch + self.gamma * T.max(q_next, dim=1)[0]
 
-        loss = self.Q_eval.loss(q_target, q_eval).to(self.Q_eval.device)
-        loss.backward()
-        self.Q_eval.optimizer.step()
+            loss = self.Q_eval.loss(q_target, q_eval).to(self.Q_eval.device)
+            loss.backward()
+            self.Q_eval.optimizer.step()
 
-        self.learn_step += 1
-        if self.learn_step % self.target_update_freq == 0:
-            self.Q_target.load_state_dict(self.Q_eval.state_dict())
+            self.learn_step += 1
+            if self.learn_step % self.target_update_freq == 0:
+                self.Q_target.load_state_dict(self.Q_eval.state_dict())
 
-        self.epsilon = max((self.epsilon - self.eps_decay),
-                           self.eps_final)  # we used linear decay because it takes more iterations to reach null value
+            self.epsilon = max((self.epsilon - self.eps_decay),
+                               self.eps_final)  # we used linear decay because it takes more iterations to reach null value
 
     #
     def save_models(self, q_eval_path,q_target_path):

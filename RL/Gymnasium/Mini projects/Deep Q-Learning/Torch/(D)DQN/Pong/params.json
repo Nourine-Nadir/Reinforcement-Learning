@@ -19,7 +19,7 @@
     "final_eps":0.02,
     "batch_size":64,
     "n_actions":6,
-    "input_dims": {
+    "input_shape": {
       "nb_images": 5,
       "height": 80,
       "width": 80
