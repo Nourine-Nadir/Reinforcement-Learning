@@ -80,6 +80,7 @@ class Agent(object):
     os.environ['TF_DATA_EXPERIMENTAL_SLACK'] = '0'
 
     def replace_target_network(self):
+        # print(self.learn_step)
         if self.learn_step != 0 and (self.learn_step % self.target_update_freq) == 0:
             self.Q_target.set_weights(self.Q_eval.get_weights())
 
@@ -87,6 +88,7 @@ class Agent(object):
         self.memory.store_transition(state, action, reward, next_state, done)
 
     def choose_action(self, obs):
+        # print(obs.shape)
         if random.random() < self.epsilon:
             action = random.choice(self.action_space)
         else:
@@ -97,35 +99,55 @@ class Agent(object):
 
     def learn(self):
         if self.memory.mem_cntr > self.batch_size:
-            state, action, reward, next_state, done = \
-                self.memory.sample_buffer(self.batch_size)
-            self.replace_target_network()
+            # Sample data on the GPU
+            with tf.device('/GPU:0'):
+                state, action, reward, new_state, done = self.memory.sample_buffer(self.batch_size)
 
+            self.replace_target_network()
             with tf.device('/GPU:0'):
                 q_eval = self.Q_eval.predict(state, verbose=0)
-                q_next = self.Q_target.predict(next_state, verbose=0)
+
+                q_next = self.Q_target.predict(new_state, verbose=0)
+
+            """
+            Thanks to Maximus-Kranic for pointing out this subtle bug.
+            q_next[done] = 0.0 works in Torch; it sets q_next to 0
+            for every index that done == 1. The behavior is different in
+            Keras, as you can verify by printing out q_next to the terminal
+            when done.any() == 1.
+            Despite this, the agent still manages to learn. Odd.
+            The correct implementation in Keras is to use q_next * (1-done)
 
             q_next[done] = 0.0
 
+            q_target = q_eval[:]
+
             indices = np.arange(self.batch_size)
-            q_target = q_eval.copy()
-
             q_target[indices, action] = reward + \
-                                        self.gamma * np.max(q_next, axis=1)
+                                        self.gamma*np.max(q_next,axis=1)
+            """
+            q_target = q_eval[:]
+            indices = np.arange(self.batch_size)
+            q_target[indices, action] = reward + \
+                                        self.gamma * np.max(q_next, axis=1) * (1 - done)
+            self.learn_(state, q_target)
 
-            # -------------------------------------------
-            loss_fn = keras.losses.MeanSquaredError()
-            optimizer = keras.optimizers.Adam()
+            self.epsilon = max((self.epsilon - self.eps_decay),
+                               self.eps_final)
+            self.learn_step += 1
 
-            with tf.device('/GPU:0'):
-                with tf.GradientTape() as tape:
-                    logits = self.Q_eval(state, training=True)  # forward pass
-                    train_loss_value = loss_fn(q_target, logits)  # compute loss
+    @tf.function
+    def learn_(self,state, q_target):
+        with tf.device('/GPU:0'):
+            with tf.GradientTape() as tape:
+                logits = self.Q_eval(state, training=True)  # forward pass
+                train_loss_value = self.loss_fn(q_target, logits)  # compute loss
 
-                grads = tape.gradient(train_loss_value, self.Q_eval.trainable_weights)
-                optimizer.apply_gradients(zip(grads, self.Q_eval.trainable_weights))
+            # compute gradient
+            grads = tape.gradient(train_loss_value, self.Q_eval.trainable_weights)
 
-
+            # update weights
+            self.optimizer.apply_gradients(zip(grads, self.Q_eval.trainable_weights))
     def update_epsilon(self):
         #Moved these changement here because it can't run on the graph mode inside a %tf.function
         self.epsilon = max(self.epsilon - self.eps_decay, self.eps_final)
@@ -138,8 +160,8 @@ class Agent(object):
             _ = self.Q_target(dummy_input)
 
 
-            tf.saved_model.save(self.Q_eval, self.q_eval_filename)
-            tf.saved_model.save(self.Q_target, self.q_target_filename)
+            tf.saved_model.save(self.Q_eval, self.q_eval_filename,save_format='tf')
+            tf.saved_model.save(self.Q_target, self.q_target_filename, save_format='tf')
             print("Model saved successfully !")
         except:
             print("Model could not be saved")

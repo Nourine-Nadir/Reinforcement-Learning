@@ -15,17 +15,17 @@
     "num_games": 500,
     "gamma":0.99,
     "initial_eps":1.0,
-    "eps_decay":1e-5,
+    "eps_decay":2e-5,
     "final_eps":0.02,
-    "batch_size":32,
+    "batch_size":64,
     "n_actions":6,
     "input_dims": {
-      "nb_images": 4,
+      "nb_images": 5,
       "height": 80,
       "width": 80
     },
     "lr":0.0001,
-    "max_memory_size": 25000,
+    "max_memory_size": 2000,
     "model_path":"models/DQN_memory_model",
     "Q_eval_path":"models/Q_eval_model",
     "Q_target_path":"models/Q_target_model",
@@ -33,7 +33,7 @@
     "layer1_nodes": 512,
     "layer2_nodes": 64,
     "layer3_nodes": 64,
-    "update_freq": 100
+    "update_freq": 200
 
   }
 }

@@ -38,7 +38,7 @@ def plotLearning(x, scores, epsilons, filename, lines=None):
 
 
 class SkipEnv(gym.Wrapper):
-    def __init__(self, env, skip=4):
+    def __init__(self, env, skip=5):
         super(SkipEnv, self).__init__(env)  # not necessary in python 3 to pass the class and self to super method
         self.skip = skip
 
@@ -116,5 +116,5 @@ def make_env(env_name):
     env = SkipEnv(env)
     env = PreProcessFrame(env)
     env = MoveImgChannel(env)  # It is crucial to move the image channel to the 0th dim before the BufferWrapepr so it can stack images
-    env = BufferWrapper(env, 4)
+    env = BufferWrapper(env, 5)
     return ScaleFrame(env)
