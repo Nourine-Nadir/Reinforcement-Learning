@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import gymnasium as gym
 
-
+n_steps= 8
 def plotLearning(x, scores, epsilons, filename, lines=None):
     fig = plt.figure()
     ax = fig.add_subplot(111, label="1")
@@ -38,7 +38,7 @@ def plotLearning(x, scores, epsilons, filename, lines=None):
 
 
 class SkipEnv(gym.Wrapper):
-    def __init__(self, env, skip=5):
+    def __init__(self, env, skip=n_steps):
         super(SkipEnv, self).__init__(env)  # not necessary in python 3 to pass the class and self to super method
         self.skip = skip
 
@@ -116,5 +116,5 @@ def make_env(env_name, render_mode=None):
     env = SkipEnv(env)
     env = PreProcessFrame(env)
     env = MoveImgChannel(env)  # It is crucial to move the image channel to the 0th dim before the BufferWrapepr so it can stack images
-    env = BufferWrapper(env, 5)
+    env = BufferWrapper(env, n_steps)
     return ScaleFrame(env)
