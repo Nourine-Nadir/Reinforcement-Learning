@@ -76,5 +76,5 @@ if __name__ == '__main__':
 
         eps_history.append(agent.epsilon)
     x = [i + 1 for i in range(num_games)]
-    filename = 'PongNoFrameskip-v4.png'
+    filename = 'PongNoFrameskip-v4 5steps.png'
     plotLearning(x, scores, eps_history, filename)

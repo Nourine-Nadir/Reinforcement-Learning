@@ -30,8 +30,8 @@ class DQNetwork(nn.Module):
 
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
-        self.fc3 = nn.Linear(self.fc2_dims, self.fc3_dims)
-        self.fc4 = nn.Linear(self.fc3_dims, self.nb_actions)
+        # self.fc3 = nn.Linear(self.fc2_dims, self.fc3_dims)
+        self.fc4 = nn.Linear(self.fc2_dims, self.nb_actions)
 
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
         self.loss = nn.SmoothL1Loss()  # Use Huber loss

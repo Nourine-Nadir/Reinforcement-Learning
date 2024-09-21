@@ -20,7 +20,7 @@
     "batch_size":64,
     "n_actions":6,
     "input_shape": {
-      "nb_images": 5,
+      "nb_images": 8,
       "height": 80,
       "width": 80
     },

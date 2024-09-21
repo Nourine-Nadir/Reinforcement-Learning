@@ -52,8 +52,7 @@ if __name__ == '__main__':
             action = agent.choose_action(observation)
             observation_, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
-            #             print(observation.shape)
-            #             print(observation_.shape)
+
             score += reward
             n_steps += 1
             if not load_checkpoint:
@@ -61,7 +60,6 @@ if __name__ == '__main__':
                 agent.store_transition(observation, action, reward,
                                        observation_, int(done))
                 agent.learn()
-                # agent.update_epsilon()
             else:
                 env.render()
             observation = observation_
@@ -79,5 +77,5 @@ if __name__ == '__main__':
 
         eps_history.append(agent.epsilon)
     x = [i + 1 for i in range(num_games)]
-    filename = 'PongNoFrameskip-v4.png'
+    filename = 'PongNoFrameskip-v4 8steps.png'
     plotLearning(x, scores, eps_history, filename)

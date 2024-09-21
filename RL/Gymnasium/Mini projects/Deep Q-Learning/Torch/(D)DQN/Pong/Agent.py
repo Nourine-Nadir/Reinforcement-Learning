@@ -7,8 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import random
 import numpy as np
-from tensorflow.keras.optimizers.schedules import ExponentialDecay
-from tensorflow.keras import mixed_precision
+
 import os, pickle
 
 
@@ -29,8 +28,6 @@ class Agent(object):
                  q_target_filename: str,
                  ):
 
-        policy = mixed_precision.Policy('mixed_float16')
-        mixed_precision.set_global_policy(policy)
 
         self.update_freq = update_freq
         self.input_shape = input_shape
@@ -122,9 +119,9 @@ class Agent(object):
             self.Q_target.load_state_dict(T.load(self.q_target_filename, map_location=self.device))
             print("Models loaded successfully!")
         except Exception as e:
-            print(f"Error loading models: {e}")
-            print("Initializing new models.")
-            self.Q_eval = DQNetwork(lr=self.lr, n_actions=self.n_actions, input_dims=self.input_shape)
-            self.Q_target = DQNetwork(lr=self.lr, n_actions=self.n_actions, input_dims=self.input_shape)
+            print(f"Error loading Pong models: {e}")
+            print("Initializing new Pong models.")
+            self.Q_eval = DQNetwork(lr=self.lr, n_actions=self.n_actions, input_shape=self.input_shape)
+            self.Q_target = DQNetwork(lr=self.lr, n_actions=self.n_actions, input_shape=self.input_shape)
             self.Q_target.load_state_dict(self.Q_eval.state_dict())
             self.Q_target.eval()
