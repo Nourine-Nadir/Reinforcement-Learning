@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Optimized parameters for Lunar Lander",
   "parameters": {
-    "nb_episodes": 5000,
+    "nb_episodes": 3000,
     "gamma": 0.99,
     "initial_eps": 1.0,
     "eps_decay": 1e-3,
