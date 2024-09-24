@@ -1,10 +1,10 @@
-import numpy as np
-from Agent import Agent
-from utils import make_env, plotLearning
 import json
-from tqdm import tqdm
-import gymnasium as gym
 import torch
+import numpy as np
+from tqdm import tqdm
+from Agent import Agent
+import gymnasium as gym
+from utils import make_env, plotLearning
 
 
 def train():

@@ -1,15 +1,7 @@
-import json
-# from Actor import Actor_Network
-# from Critic import Critic_Network
-from Actor_Critic import ActorCritic
-import torch as T
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import random
-import numpy as np
-
 import os, pickle
+import torch as T
+import torch.optim as optim
+from Actor_Critic import ActorCritic
 
 
 class Agent():
