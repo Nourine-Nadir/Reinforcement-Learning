@@ -1,7 +1,7 @@
 # RL Overview
 Definition : A **framework for learning** how to interact with the environment **from experience.**
 
-![Figure 1 : Scheme of reinforcement learning model](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png?table=block&id=edeacd5f-d380-4a95-a7d9-076df205f85e&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2)
+![Figure 1 : Scheme of reinforcement learning model](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png/size/w=1920?exp=1727351575&sig=vQGSxNq5_V7KCIwX4I-UZ9JnJaRFx4VLKJ0Uv-7TrzU)
 
 Figure 1 : Scheme of reinforcement learning model
 
@@ -111,7 +111,7 @@ Hindsight replay was a big **improvement** for making more **sample efficient** 
 
 # Overview of Methods
 
-![Figure 2: Summary of methods in Reinforcement Learning](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2F304e220e-608b-440f-9171-ec0fed46e724%2FUntitled.png?table=block&id=48870be7-e569-435d-b48d-e5b5e65295f5&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2)
+![Figure 2: Summary of methods in Reinforcement Learning](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2F304e220e-608b-440f-9171-ec0fed46e724%2FUntitled.png/size/w=1920?exp=1727351801&sig=5TzvI_o-sEh983UmC4Md4XNB38YGaLl8t1wvpI_X6D0)
 
 Figure 2: Summary of methods in Reinforcement Learning
 
@@ -234,11 +234,11 @@ There is a more general mathematical treatment of Bellman’s equation in this s
 
 In optimal control, the goal is often to find a control input $u(t)$ to drive a dynamical system
 
-                         $\frac{d}{dt}x=f(x(t),u(t),t)dt$
+$\frac{d}{dt}x=f(x(t),u(t),t)dt$
 
 **to follow a trajectory x(t) that minimizes a cost function**
 
-       $J(x(t),u(t),t_0,t_f)=Q(x(t_f),t_f)+\int_{t_0}^{t_f} \mathcal L(x(\tau),u(\tau))d_{\tau}$
+$J(x(t),u(t),t_0,t_f)=Q(x(t_f),t_f)+\int_{t_0}^{t_f} \mathcal L(x(\tau),u(\tau))d_{\tau}$
 
 **Breakdown:**
 
@@ -256,7 +256,7 @@ $\int_{t_0}^{t_f} \cal L(x(\tau),u(\tau))d_{\tau}$: This integral represents the
 
 We introduce the value function just like in classic RL that is the cost $J$ when it is minimized over the control input $u$. Given an initial state $x(o)=x(t_0)$, an optimal control $u(t_0)$ will result an optimal cost function $J$
 
-    $\partial V(x(t_0),t_0,t_f)=\min_{u(t)}J(x(t),u(t),t_0,t_f)$
+$\partial V(x(t_0),t_0,t_f)=\min_{u(t)}J(x(t),u(t),t_0,t_f)$
 
 It is **not a function** of $u$ because it has been already optimized on it and **neither a function** of $x$ because that is also **specified** by $u$ and the **dynamics** that is guiding the trajectory of $x$, It is **only** a function of the initial condition(state) $x(t_0)$ and the start/end time $t_0,t_f$ respectively. It is often called the ***cost-to-go*** in control theory.
 
@@ -274,11 +274,11 @@ To derive the *HJB* equation, we may compute the total time derivative of the va
 
 $\large \frac{d}{dt} V(x(t),t,t_f)= \frac{\partial V}{\partial t} \frac{\partial V}{\partial x}^T \frac{dx}{dt}$
 
-                            $\large =\min_{u(t)} \frac{d}{dt}\left( \int_0^{t_f} \mathcal L (x(\tau),u(\tau))d\tau+   Q(x(t_f),t_f) \right)$
+$\large =\min_{u(t)} \frac{d}{dt}\left( \int_0^{t_f} \mathcal L (x(\tau),u(\tau))d\tau+   Q(x(t_f),t_f) \right)$
 
-                            $\large =\min_{u(t)} \left(\frac{d}{dt}\int_0^{t_f}\mathcal L(x(\tau),u(\tau))d\tau  \right)$
+$\large =\min_{u(t)} \left(\frac{d}{dt}\int_0^{t_f}\mathcal L(x(\tau),u(\tau))d\tau  \right)$
 
-                            $\implies \large -\frac{\partial V}{\partial t}=\min_{u(t)} \left((\frac{\partial V}{\partial x})^T f(x,u)+\mathcal L(x,u)  \right)$
+$\implies \large -\frac{\partial V}{\partial t}=\min_{u(t)} \left((\frac{\partial V}{\partial x})^T f(x,u)+\mathcal L(x,u)  \right)$
 
 ### Discrete-time HJB
 
@@ -294,7 +294,7 @@ $V(x_0,n)=\min_{\{u_k\}^n_{k=0}} J(x_0,\{ u_k \}^n_{k=0},n)$
 
 Again, Bellman’s principle of optimality states that an optimal control policy has the property that at any point along the optimal trajectory $x(t)$, the remaining control policy is optimal with respect to this new initial state:
 
-![Figure 3: Bellman’s principle of optimality](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fb0d9fe9d-79bd-4878-9b3c-195ec8b86411%2FBelmmans_principle_of_optimality.png?table=block&id=ed5c5c6f-9800-4355-93f6-ce5303906eec&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2)
+![Figure 3: Bellman’s principle of optimality](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fb0d9fe9d-79bd-4878-9b3c-195ec8b86411%2FBelmmans_principle_of_optimality.png/size/w=1920?exp=1727351743&sig=xf9bsaGcojg9HDXXVJyRCsAQl2kRNB_qj3i5NkjjQZ4)
 
 Figure 3: Bellman’s principle of optimality
 
@@ -304,7 +304,7 @@ Thus, the value at an intermediate time step k may be written as:
 
 $V(x_k,n)=(\min_{u_k} \mathcal L(x_k,u_k))+V(x_{k+1},n)$
 
-            $=\min_{u_k}(\mathcal L(x_k,u_k)+V(F(x_k,u_k),n)).$ 
+$=\min_{u_k}(\mathcal L(x_k,u_k)+V(F(x_k,u_k),n)).$ 
 
 This stipulate that taking the best $u_k$ time step so that the current cost plus my future value function at the next step is minimized. So the value function can be broke down into recursion.
 
@@ -473,7 +473,7 @@ $Q^{new}(s_k,a_k)=Q^{old}(s_k,a_k)+\alpha(R_{\sum}^{(n)}-Q^{old}(s_k,a_k))$
 
 # Deep RL
 
-![Figure 4: Deep RL](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fe7421423-99fb-4a8a-9237-29923115ec98%2FUntitled.png?table=block&id=4a437f0a-e264-4af3-bd5b-6da01143d167&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2)
+![Figure 4: Deep RL](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fe7421423-99fb-4a8a-9237-29923115ec98%2FUntitled.png/size/w=1920?exp=1727353845&sig=G7CKMbfICGP-i3afnJBhn-yW9eEJZYpomAZEgN4WxW0)
 
 Q-Learning is mostly used in Deep Reinforcement learning and is called Deep Q-network that learn the $Q(s,a)$ function, once you learn that function if you are in state $s$ it will predict the best action $a$.
 
