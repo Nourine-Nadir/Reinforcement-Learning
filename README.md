@@ -1,7 +1,7 @@
 # RL Overview
 Definition : A **framework for learning** how to interact with the environment **from experience.**
 
-![Figure 1 : Scheme of reinforcement learning model](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png?table=block&id=edeacd5f-d380-4a95-a7d9-076df205f85e&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2)
+![Figure 1 : Scheme of reinforcement learning model](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png?table=block&id=edeacd5f-d380-4a95-a7d9-076df205f85e&spaceId=f804d5dc-60fd-4e7f-b699-184eb607f14c&width=1920&userId=f545eae4-0c3a-4d26-abaf-3a6d1b59e0b4&cache=v2](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png/size/w=1920?exp=1727351575&sig=vQGSxNq5_V7KCIwX4I-UZ9JnJaRFx4VLKJ0Uv-7TrzU)
 
 Figure 1 : Scheme of reinforcement learning model
 
