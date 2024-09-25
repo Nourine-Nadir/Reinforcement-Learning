@@ -7,7 +7,7 @@ import gymnasium as gym
 from utils import make_env, plotLearning
 
 
-def train():
+def train( plot_name, save_model=False):
     # Print the device being used
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -17,7 +17,7 @@ def train():
 
     nb_episodes, gamma, initial_eps, eps_decay, \
         final_eps, batch_size, n_actions, input_shape, \
-        lr, max_memory_size, model_path, Q_eval_path, Q_target_path, agent_path, \
+        lr, max_memory_size, model_path, agent_path, \
         layer1_nodes, layer2_nodes, layer3_nodes, update_freq \
         = \
         (params[key] for key in
@@ -39,7 +39,7 @@ def train():
                   update_freq=update_freq,
                   max_mem_size=max_memory_size)
 
-    scores, eps_history = [], []
+    scores, alpha_history = [], []
     for i in tqdm(range(nb_episodes)):
         score = 0
         done = False
@@ -57,19 +57,22 @@ def train():
 
         try:
             agent.learn()
+
+            # print(agent.ActorCritic.alpha.item())
         except RuntimeError as e:
             print(f"RuntimeError in learning step: {e}")
             print(f"Current observation shape: {obs.shape}")
             print(f"Current action: {action}")
             raise e
         scores.append(score)
-        eps_history.append(agent.eps)
+        alpha_history.append(agent.ActorCritic.alpha.item())
 
         if i % 100 == 0:  # Print less frequently
             avg_score = np.mean(scores[-100:])
-            print('Episode', i, 'score %.1f avg score %.1f epsilon %.3f' % (score, avg_score, agent.eps))
-
-    agent.save_agent(agent_path)
-    x = [i + 1 for i in range(nb_episodes)]
-    filename = 'lunar_lander.png'
-    plotLearning(x, scores, eps_history, filename)
+            print('Episode', i, 'score %.1f avg score %.1f alpha %.3f' % (score, avg_score, agent.ActorCritic.alpha))
+    if save_model:
+        # agent.save_agent(agent_path)
+        # agent.save_model(model_path)
+        x = [i + 1 for i in range(nb_episodes)]
+        filename = plot_name+'.png'
+        plotLearning(x, scores, alpha_history, filename)

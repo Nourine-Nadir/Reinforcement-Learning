@@ -12,9 +12,12 @@ class ActorCritic(nn.Module):
         self.action_layer = nn.Linear(128, 4)
         self.value_layer = nn.Linear(128, 1)
 
+
         self.logprobs = []
         self.state_values = []
         self.rewards = []
+        self.action_distributions = []
+        self.alpha = torch.tensor(0.99)
 
     def forward(self, state):
         state = torch.from_numpy(state).float()
@@ -25,8 +28,8 @@ class ActorCritic(nn.Module):
         action_probs = F.softmax(self.action_layer(state))
         action_distribution = Categorical(action_probs)
         action = action_distribution.sample()
-
         self.logprobs.append(action_distribution.log_prob(action))
+        self.action_distributions.append(action_distribution)
         self.state_values.append(state_value)
 
         return action.item()
@@ -45,11 +48,14 @@ class ActorCritic(nn.Module):
         rewards = (rewards - rewards.mean()) / (rewards.std())
 
         loss = 0
-        for logprob, value, reward in zip(self.logprobs, self.state_values, rewards):
+        for logprob, value, reward, action_distribution in zip(self.logprobs, self.state_values, rewards, self.action_distributions):
             advantage = reward - value.item()
             action_loss = -logprob * advantage
             value_loss = F.smooth_l1_loss(value, reward)
-            loss += (action_loss + value_loss)
+            entropy = torch.tensor(action_distribution.entropy())
+            loss += (action_loss + value_loss - self.alpha * entropy)
+
+        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), 0))
         return loss
 
     def clearMemory(self):

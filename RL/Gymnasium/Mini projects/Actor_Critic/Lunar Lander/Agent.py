@@ -51,7 +51,7 @@ class Agent():
 
 
         self.learn_step_counter += 1
-        self.eps = max((self.eps - self.eps_decay), self.final_eps)
+        # self.eps = max((self.eps - self.eps_decay), self.final_eps)
 
 
 
@@ -60,7 +60,7 @@ class Agent():
 
     def load_model(self, q_eval_path ):
         try:
-            self.Actor = T.load(q_eval_path, map_location=self.device)
+            self.Actor = T.load(q_eval_path)
         except FileNotFoundError:
             print(f"Error: Could not find model files at {q_eval_path }")
         except RuntimeError as e:

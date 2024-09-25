@@ -14,8 +14,6 @@
     "lr": 0.01,
     "max_memory_size": 100000,
     "model_path": "models/DQN_memory_model",
-    "Q_eval_path": "models/Q_eval_model",
-    "Q_target_path": "models/Q_target_model",
     "agent_path": "models/agent_model",
     "layer1_nodes": 256,
     "layer2_nodes": 256,
