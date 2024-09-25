@@ -10,7 +10,7 @@ def plotLearning(x, scores, alphas, filename, lines=None):
 
     ax.plot(x, alphas, color="C0")
     ax.set_xlabel("Game", color="C0")
-    ax.set_ylabel("Epsilon", color="C0")
+    ax.set_ylabel("Alpha", color="C0")
     ax.tick_params(axis='x', colors="C0")
     ax.tick_params(axis='y', colors="C0")
 

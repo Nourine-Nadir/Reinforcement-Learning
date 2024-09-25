@@ -55,7 +55,7 @@ class ActorCritic(nn.Module):
             entropy = torch.tensor(action_distribution.entropy())
             loss += (action_loss + value_loss - self.alpha * entropy)
 
-        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), 0))
+        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), -1))
         return loss
 
     def clearMemory(self):
