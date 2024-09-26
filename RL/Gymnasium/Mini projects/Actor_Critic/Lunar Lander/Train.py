@@ -15,7 +15,7 @@ def train( plot_name, save_model=False):
     with open('params.json', 'r') as f:
         params = json.load(f)["parameters"]
 
-    nb_episodes, gamma, initial_eps, eps_decay, \
+    nb_episodes, gamma,alpha, final_alpha, initial_eps, eps_decay, \
         final_eps, batch_size, n_actions, input_shape, \
         lr, max_memory_size, model_path, agent_path, \
         layer1_nodes, layer2_nodes, layer3_nodes, update_freq \
@@ -29,6 +29,8 @@ def train( plot_name, save_model=False):
                   layer2_nodes=layer2_nodes,
                   layer3_nodes=layer3_nodes,
                   gamma=gamma,
+                  alpha=alpha,
+                  final_alpha=final_alpha,
                   initial_eps=initial_eps,
                   eps_decay=eps_decay,
                   final_eps=final_eps,
@@ -74,5 +76,5 @@ def train( plot_name, save_model=False):
         # agent.save_agent(agent_path)
         agent.save_model(model_path)
         x = [i + 1 for i in range(nb_episodes)]
-        filename = plot_name+'.png'
+        filename = plot_name+' lr '+ str(lr) +'.png'
         plotLearning(x, scores, alpha_history, filename)

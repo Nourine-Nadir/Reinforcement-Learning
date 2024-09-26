@@ -5,7 +5,7 @@ from torch.distributions import Categorical
 
 
 class ActorCritic(nn.Module):
-    def __init__(self):
+    def __init__(self, alpha, final_alpha):
         super(ActorCritic, self).__init__()
         self.affine = nn.Linear(8, 128)
 
@@ -17,7 +17,8 @@ class ActorCritic(nn.Module):
         self.state_values = []
         self.rewards = []
         self.action_distributions = []
-        self.alpha = torch.tensor(0.99)
+        self.alpha = torch.tensor(alpha)
+        self.final_alpha = final_alpha
 
     def forward(self, state):
         state = torch.from_numpy(state).float()
@@ -55,7 +56,7 @@ class ActorCritic(nn.Module):
             entropy = torch.tensor(action_distribution.entropy())
             loss += (action_loss + value_loss - self.alpha * entropy)
 
-        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), 0.05))
+        self.alpha =  torch.tensor(max((self.alpha.item() * .995), self.final_alpha))
         return loss
 
     def clearMemory(self):

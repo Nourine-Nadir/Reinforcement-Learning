@@ -15,7 +15,7 @@ def test():
     with open('params.json', 'r') as f:
         params = json.load(f)["parameters"]
 
-    nb_episodes, gamma, initial_eps, eps_decay, \
+    nb_episodes, gamma,alpha, final_alpha, initial_eps, eps_decay, \
         final_eps, batch_size, n_actions, input_shape, \
         lr, max_memory_size, model_path, agent_path, \
         layer1_nodes, layer2_nodes, layer3_nodes, update_freq \
