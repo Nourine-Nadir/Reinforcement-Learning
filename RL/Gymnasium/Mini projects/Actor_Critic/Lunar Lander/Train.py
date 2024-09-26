@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from Agent import Agent
 import gymnasium as gym
-from utils import make_env, plotLearning
+from utils import plotLearning
 
 
 def train( plot_name, save_model=False):
@@ -69,10 +69,10 @@ def train( plot_name, save_model=False):
 
         if i % 100 == 0:  # Print less frequently
             avg_score = np.mean(scores[-100:])
-            print('Episode', i, 'score %.1f avg score %.1f alpha %.3f' % (score, avg_score, agent.ActorCritic.alpha))
+            print('Episode', i, 'score %.1f avg score %.1f   alpha %.3f' % (score, avg_score, agent.ActorCritic.alpha))
     if save_model:
         # agent.save_agent(agent_path)
-        # agent.save_model(model_path)
+        agent.save_model(model_path)
         x = [i + 1 for i in range(nb_episodes)]
         filename = plot_name+'.png'
         plotLearning(x, scores, alpha_history, filename)

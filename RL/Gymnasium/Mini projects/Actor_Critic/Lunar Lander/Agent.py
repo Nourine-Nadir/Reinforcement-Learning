@@ -50,19 +50,17 @@ class Agent():
         self.ActorCritic.clearMemory()
 
 
-        self.learn_step_counter += 1
-        # self.eps = max((self.eps - self.eps_decay), self.final_eps)
-
 
 
     def save_model(self, PATH):
-        T.save(self.Actor.state_dict(), PATH)
+        T.save(self.ActorCritic.state_dict(), PATH)
 
-    def load_model(self, q_eval_path ):
+    def load_model(self, PATH ):
         try:
-            self.Actor = T.load(q_eval_path)
+            print('imported model')
+            self.ActorCritic.load_state_dict(T.load(PATH, weights_only=True))
         except FileNotFoundError:
-            print(f"Error: Could not find model files at {q_eval_path }")
+            print(f"Error: Could not find model files at {PATH }")
         except RuntimeError as e:
             print(f"Error loading model: {e}")
 

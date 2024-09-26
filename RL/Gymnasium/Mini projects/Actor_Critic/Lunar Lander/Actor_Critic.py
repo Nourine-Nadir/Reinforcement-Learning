@@ -45,17 +45,17 @@ class ActorCritic(nn.Module):
 
         # normalizing the rewards:
         rewards = torch.tensor(rewards)
-        rewards = (rewards - rewards.mean()) / (rewards.std())
+        rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
 
         loss = 0
         for logprob, value, reward, action_distribution in zip(self.logprobs, self.state_values, rewards, self.action_distributions):
             advantage = reward - value.item()
             action_loss = -logprob * advantage
-            value_loss = F.smooth_l1_loss(value, reward)
+            value_loss = F.smooth_l1_loss(value, reward.unsqueeze(0))
             entropy = torch.tensor(action_distribution.entropy())
             loss += (action_loss + value_loss - self.alpha * entropy)
 
-        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), -1))
+        self.alpha =  torch.tensor(max((self.alpha.item() - 1e-3), 0.05))
         return loss
 
     def clearMemory(self):
