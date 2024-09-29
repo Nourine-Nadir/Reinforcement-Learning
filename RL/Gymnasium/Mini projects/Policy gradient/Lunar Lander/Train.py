@@ -75,7 +75,7 @@ def train( plot_name, save_model=False):
 
         if i % 100 == 0:  # Print less frequently
             avg_score = np.mean(scores[-100:])
-            print('Episode', i, 'score %.1f avg score %.1f   alpha %.3f alpha %.5f' % (score, avg_score, agent.ActorCritic.alpha, agent.scheduler.get_lr()[0]))
+            print('Episode', i, 'score %.1f avg score %.1f   alpha %.3f lr %.5f' % (score, avg_score, agent.ActorCritic.alpha, agent.scheduler.get_lr()[0]))
     if save_model:
         # agent.save_agent(agent_path)
         agent.save_model(model_path)
