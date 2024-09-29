@@ -15,7 +15,7 @@
     "input_shape": [8],
     "lr": 0.003,
     "max_memory_size": 100000,
-    "model_path": "models/DQN_memory_model",
+    "model_path": "models/ActorCritic_model",
     "agent_path": "models/agent_model",
     "layer1_nodes": 256,
     "layer2_nodes": 256,
