@@ -1,0 +1,26 @@
+{
+  "name": "lunar_lander",
+  "version": "1.0.0",
+  "description": "Optimized parameters for Lunar Lander",
+  "parameters": {
+    "nb_episodes": 3000,
+    "gamma": 0.99,
+    "alpha": 0.99,
+    "final_alpha": 0.005,
+    "initial_eps": 1.0,
+    "eps_decay": 1e-3,
+    "final_eps": 0.01,
+    "batch_size": 256,
+    "n_actions": 4,
+    "input_shape": [8],
+    "lr": 5e-3,
+    "min_lr": 5e-4,
+    "max_memory_size": 0,
+    "model_path": "models/PolicyGradient_model",
+    "agent_path": "models/agent_model",
+    "layer1_nodes": 256,
+    "layer2_nodes": 256,
+    "layer3_nodes": -1,
+    "update_freq": 4
+  }
+}
