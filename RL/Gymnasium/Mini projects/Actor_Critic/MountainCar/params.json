@@ -1,0 +1,25 @@
+{
+  "name": "lunar_lander",
+  "version": "1.0.0",
+  "description": "Optimized parameters for Lunar Lander",
+  "parameters": {
+    "nb_episodes": 40,
+    "epochs": 1,
+    "gamma": 0.99,
+    "alpha": 0.5,
+    "final_alpha": 0.1,
+    "initial_eps": 1.0,
+    "eps_decay": 1e-3,
+    "final_eps": 0.01,
+    "batch_size": 256,
+    "actor_lr": 5e-5,
+    "critic_lr": 1e-4,
+    "max_memory_size": 0,
+    "model_path": "saved_models/ActorCritic_model",
+    "agent_path": "saved_models/agent_model",
+    "layer1_nodes": 256,
+    "layer2_nodes": 256,
+    "layer3_nodes": -1,
+    "update_freq": 4
+  }
+}
