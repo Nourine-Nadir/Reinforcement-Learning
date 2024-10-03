@@ -109,24 +109,3 @@ class GenericNetwork(nn.Module):
         return self.scheduler.get_last_lr()[0]
 
 
-class GaussianPolicy(nn.Module):
-    def __init__(self,
-                 lr,
-                 input_shape,
-                 fc1_dims,
-                 fc2_dims,
-                 n_actions
-                 ):
-        super(GaussianPolicy, self).__init__()
-        self.fc1_dims = fc1_dims
-        self.fc2_dims = fc2_dims
-        self.lr = lr
-        self.n_actions = n_actions
-        self.input_shape = input_shape
-        self.fc1 = nn.Linear(*self.input_shape[0], self.fc1_dims)
-        self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
-        self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
-        self.optimizer = T.optim.Adam(self.parameters(), lr=self.lr)
-
-        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cuda:1')
-        self.to(self.device)
