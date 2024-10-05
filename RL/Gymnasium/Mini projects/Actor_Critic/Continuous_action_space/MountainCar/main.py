@@ -6,5 +6,5 @@ if __name__ == '__main__':
     env = gym.make('MountainCarContinuous-v0')
 
 
-    train(save_model=True, plot_name='MontainCar SAC with log_probs scaling', environement=env)
+    train(save_model=True, plot_name='MontainCar SAC without log_probs scaling', environement=env)
     # test(env)

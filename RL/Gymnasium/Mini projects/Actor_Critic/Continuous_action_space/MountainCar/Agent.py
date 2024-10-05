@@ -64,6 +64,7 @@ class Agent():
 
         total_loss = actor_loss + critic_loss
         total_loss.backward()
+        print(f'actor_loss: {actor_loss}, critic_loss: {critic_loss}')
 
         self.Actor.optimizer.step()
         self.Critic.optimizer.step()

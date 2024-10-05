@@ -49,6 +49,7 @@ class Agent():
 
         self.optimizer.zero_grad()
         loss = self.ActorCritic.calculateLoss()
+        # print(f'loss : { loss}')
         loss.backward()
         self.optimizer.step()
         self.ActorCritic.clearMemory()
@@ -57,6 +58,7 @@ class Agent():
 
 
     def save_model(self, PATH):
+        os.makedirs(os.path.dirname(PATH), exist_ok=True)
         T.save(self.ActorCritic.state_dict(), PATH)
 
     def load_model(self, PATH ):

@@ -46,6 +46,7 @@ class ActorCritic(nn.Module):
 
         # normalizing the rewards:
         rewards = torch.tensor(rewards)
+
         rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
 
         loss = 0

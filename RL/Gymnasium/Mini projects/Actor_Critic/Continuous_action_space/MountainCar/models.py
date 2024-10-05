@@ -93,7 +93,7 @@ class GenericNetwork(nn.Module):
         y_t = T.tanh(probs)
 
         #  Apply the change of variables formula
-        log_probs -= T.log(self.action_scale * (1 - y_t.pow(2)) + EPSILON)
+        # log_probs -= T.log(self.action_scale * (1 - y_t.pow(2)) + EPSILON)
         #  Sum across action dimensions
         log_probs = log_probs.sum()
 
