@@ -12,7 +12,6 @@ class Agent():
                  layer2_nodes,
                  layer3_nodes,
                  n_actions: int,
-                 max_mem_size: int = 10_000,
                  gamma: float = 0.99,
                  alpha: float = 0.99,
                  final_alpha = 0.01,
@@ -21,7 +20,6 @@ class Agent():
                  eps_decay: float = 1e-4,
                  lr: float = 1e-4,
                  min_lr: float = 1e-3,
-                 update_freq : int =100
                  ):
         self.gamma = gamma
         self.alpha = alpha
@@ -34,14 +32,10 @@ class Agent():
         self.eps = initial_eps
         self.eps_decay = eps_decay
         self.final_eps = final_eps
-        self.mem_counter = 0
-        self.sequence_length = 32  # You can adjust this value
 
-        self.target_update_frequency = update_freq
-        self.learn_step_counter = 0
-        self.ActorCritic = PolicyGradient(alpha=self.alpha, final_alpha=self.final_alpha)
-        self.optimizer = optim.Adam(self.ActorCritic.parameters(), lr=self.lr, betas=(0.9, 0.999))
-        self.scheduler = optim.lr_scheduler.LambdaLR(
+        self.policy = PolicyGradient(alpha=self.alpha, final_alpha=self.final_alpha)
+        self.optimizer = optim.Adam(self.policy.parameters(), lr=self.lr, betas=(0.9, 0.999))
+        self.__scheduler = optim.lr_scheduler.LambdaLR(
             self.optimizer,
             lr_lambda=lambda epoch : max(0.99 ** epoch, (self.min_lr/self.lr) )
         )
@@ -54,22 +48,25 @@ class Agent():
     def learn(self):
 
         self.optimizer.zero_grad()
-        loss = self.ActorCritic.calculateLoss()
+        loss = self.policy.calculateLoss()
         loss.backward()
         self.optimizer.step()
-        self.ActorCritic.clearMemory()
+        self.policy.clearMemory()
 
 
 
+    def lr_decay(self):
+        self.__scheduler.step()
 
-
+    def get_lr(self):
+        return self.__scheduler.get_last_lr()[0]
     def save_model(self, PATH):
-        T.save(self.ActorCritic.state_dict(), PATH)
+        T.save(self.policy.state_dict(), PATH)
 
     def load_model(self, PATH ):
         try:
             print('imported model')
-            self.ActorCritic.load_state_dict(T.load(PATH, weights_only=True))
+            self.policy.load_state_dict(T.load(PATH, weights_only=True))
         except FileNotFoundError:
             print(f"Error: Could not find model files at {PATH }")
         except RuntimeError as e:

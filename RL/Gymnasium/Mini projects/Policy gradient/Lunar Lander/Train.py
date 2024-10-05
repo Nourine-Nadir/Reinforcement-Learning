@@ -39,8 +39,7 @@ def train( plot_name, save_model=False):
                   input_shape=input_shape,
                   lr=lr,
                   min_lr=min_lr,
-                  update_freq=update_freq,
-                  max_mem_size=max_memory_size)
+                )
 
     scores, alpha_history = [], []
     for i in tqdm(range(nb_episodes)):
@@ -49,10 +48,10 @@ def train( plot_name, save_model=False):
         obs, info = env.reset()
 
         while not done:
-            action = agent.ActorCritic(obs)
+            action = agent.policy(obs)
             obs_, reward, terminated, truncated, info = env.step(action)
             score += reward
-            agent.ActorCritic.rewards.append(reward)
+            agent.policy.rewards.append(reward)
 
 
             obs = obs_
@@ -61,21 +60,20 @@ def train( plot_name, save_model=False):
         try:
             agent.learn()
             if i % 10 == 0 :
-                agent.scheduler.step()
-                # print(agent.scheduler.get_lr())
+                agent.lr_decay()
 
-            # print(agent.ActorCritic.alpha.item())
+
         except RuntimeError as e:
             print(f"RuntimeError in learning step: {e}")
             print(f"Current observation shape: {obs.shape}")
             print(f"Current action: {action}")
             raise e
         scores.append(score)
-        alpha_history.append(agent.ActorCritic.alpha.item())
+        alpha_history.append(agent.policy.alpha.item())
 
         if i % 100 == 0:  # Print less frequently
             avg_score = np.mean(scores[-100:])
-            print('Episode', i, 'score %.1f avg score %.1f   alpha %.3f lr %.5f' % (score, avg_score, agent.ActorCritic.alpha, agent.scheduler.get_lr()[0]))
+            print('Episode', i, 'score %.1f avg score %.1f   alpha %.3f lr %.5f' % (score, avg_score, agent.policy.alpha, agent.get_lr()))
     if save_model:
         # agent.save_agent(agent_path)
         agent.save_model(model_path)
