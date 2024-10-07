@@ -1,7 +1,7 @@
 # RL Overview
 Definition : A **framework for learning** how to interact with the environment **from experience.**
 
-![Figure 1 : Scheme of reinforcement learning model](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Ff1043188-041e-443b-b80d-7577e85b3aa5%2FUntitled.png/size/w=1920?exp=1727351575&sig=vQGSxNq5_V7KCIwX4I-UZ9JnJaRFx4VLKJ0Uv-7TrzU)
+![Figure 1 : Scheme of reinforcement learning model](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%201.png?raw=true)
 
 Figure 1 : Scheme of reinforcement learning model
 
@@ -111,7 +111,7 @@ Hindsight replay was a big **improvement** for making more **sample efficient** 
 
 # Overview of Methods
 
-![Figure 2: Summary of methods in Reinforcement Learning](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2F304e220e-608b-440f-9171-ec0fed46e724%2FUntitled.png/size/w=1920?exp=1727351801&sig=5TzvI_o-sEh983UmC4Md4XNB38YGaLl8t1wvpI_X6D0)
+![Figure 2: Summary of methods in Reinforcement Learning](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%202.png?raw=true)
 
 Figure 2: Summary of methods in Reinforcement Learning
 
@@ -294,7 +294,7 @@ $V(x_0,n)=\min_{\{u_k\}^n_{k=0}} J(x_0,\{ u_k \}^n_{k=0},n)$
 
 Again, Bellman’s principle of optimality states that an optimal control policy has the property that at any point along the optimal trajectory $x(t)$, the remaining control policy is optimal with respect to this new initial state:
 
-![Figure 3: Bellman’s principle of optimality](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fb0d9fe9d-79bd-4878-9b3c-195ec8b86411%2FBelmmans_principle_of_optimality.png/size/w=1920?exp=1727351743&sig=xf9bsaGcojg9HDXXVJyRCsAQl2kRNB_qj3i5NkjjQZ4)
+![Figure 3: Bellman’s principle of optimality](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%203.png?raw=true)
 
 Figure 3: Bellman’s principle of optimality
 
@@ -473,7 +473,7 @@ $Q^{new}(s_k,a_k)=Q^{old}(s_k,a_k)+\alpha(R_{\sum}^{(n)}-Q^{old}(s_k,a_k))$
 
 # Deep RL
 
-![Figure 4: Deep RL](https://img.notionusercontent.com/s3/prod-files-secure%2Ff804d5dc-60fd-4e7f-b699-184eb607f14c%2Fe7421423-99fb-4a8a-9237-29923115ec98%2FUntitled.png/size/w=1920?exp=1727353845&sig=G7CKMbfICGP-i3afnJBhn-yW9eEJZYpomAZEgN4WxW0)
+![Figure 4: Deep RL](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%204.png?raw=true)
 
 Q-Learning is mostly used in Deep Reinforcement learning and is called Deep Q-network that learn the $Q(s,a)$ function, once you learn that function if you are in state $s$ it will predict the best action $a$.
 
