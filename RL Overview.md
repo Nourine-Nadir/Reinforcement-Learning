@@ -1,7 +1,7 @@
 # RL Overview
 Definition : A **framework for learning** how to interact with the environment **from experience.**
 
-![Figure 1 : Scheme of reinforcement learning model](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%201.png?raw=true)
+![Figure 1 : Scheme of reinforcement learning model](figs/Figure%201.png)
 
 Figure 1 : Scheme of reinforcement learning model
 
@@ -111,7 +111,7 @@ Hindsight replay was a big **improvement** for making more **sample efficient** 
 
 # Overview of Methods
 
-![Figure 2: Summary of methods in Reinforcement Learning](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%202.png?raw=true)
+![Figure 2: Summary of methods in Reinforcement Learning](figs/Figure%202.png)
 
 Figure 2: Summary of methods in Reinforcement Learning
 
@@ -294,7 +294,7 @@ $V(x_0,n)=\min_{\{u_k\}^n_{k=0}} J(x_0,\{ u_k \}^n_{k=0},n)$
 
 Again, Bellman’s principle of optimality states that an optimal control policy has the property that at any point along the optimal trajectory $x(t)$, the remaining control policy is optimal with respect to this new initial state:
 
-![Figure 3: Bellman’s principle of optimality](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%203.png?raw=true)
+![Figure 3: Bellman’s principle of optimality](figs/Figure%203.png)
 
 Figure 3: Bellman’s principle of optimality
 
@@ -473,7 +473,7 @@ $Q^{new}(s_k,a_k)=Q^{old}(s_k,a_k)+\alpha(R_{\sum}^{(n)}-Q^{old}(s_k,a_k))$
 
 # Deep RL
 
-![Figure 4: Deep RL](https://github.com/Nourine-Nadir/Reinforcement-Learning/blob/main/FIgure%204.png?raw=true)
+![Figure 4: Deep RL](figs/Figure%204.png)
 
 Q-Learning is mostly used in Deep Reinforcement learning and is called Deep Q-network that learn the $Q(s,a)$ function, once you learn that function if you are in state $s$ it will predict the best action $a$.
 
