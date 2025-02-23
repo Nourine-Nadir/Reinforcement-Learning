@@ -1,82 +1,105 @@
-# from Actor import Actor_Network
-# from Critic import Critic_Network
-from Actor_Critic_GS import ActorCritic
-import torch as T
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.distributions import Categorical
 import torch.optim as optim
-
 import os, pickle
-
-
-class Agent():
+from Actor_Critic_GS import *
+class Agent:
     def __init__(self,
-                 batch_size: float,
-                 input_shape,
-                 layer1_nodes,
-                 layer2_nodes,
-                 layer3_nodes,
-                 n_actions: int,
-                 max_mem_size: int = 10_000,
-                 gamma: float = 0.99,
-                 initial_eps: float = 1.0,
-                 final_eps: float = 0.01,
-                 eps_decay: float = 1e-4,
-                 lr: float = 1e-4,
-                 update_freq : int =100
-                 ):
+                 input_dim=8,
+                 hidden_dim=128,
+                 output_dim=4,
+                 gamma=0.99,
+                 lr_actor=1e-4,
+                 lr_critic=1e-3,
+                 eps_clip=0.2,
+                 update_freq=100):
+
         self.gamma = gamma
-        self.batch_size = batch_size
-        self.input_shape = input_shape
-        self.eps_decay = eps_decay
-        self.lr = lr
-        self.eps = initial_eps
-        self.eps_decay = eps_decay
-        self.final_eps = final_eps
-        self.mem_counter = 0
-        self.sequence_length = 32  # You can adjust this value
+        self.eps_clip = eps_clip  # Clipping for PPO (optional)
+        self.update_freq = update_freq
 
-        self.target_update_frequency = update_freq
-        self.learn_step_counter = 0
-        self.ActorCritic = ActorCritic()
-        self.optimizer = optim.Adam(self.ActorCritic.parameters(), lr=self.lr, betas=(0.9, 0.999))
+        # Separate actor and critic
+        self.actor = Actor(input_dim, hidden_dim, output_dim)
+        self.critic = Critic(input_dim, hidden_dim)
 
+        # Separate optimizers for GSAC
+        self.actor_optimizer = optim.Adam(self.actor.parameters(), lr=lr_actor)
+        self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=lr_critic)
 
+        # Memory for training
+        self.logprobs = []
+        self.state_values = []
+        self.rewards = []
+        self.states = []
 
+    def select_action(self, state):
+        state = torch.from_numpy(state).float()
+        action_probs = self.actor(state)
+        action_distribution = Categorical(action_probs)
+        action = action_distribution.sample()
 
+        # Store log prob and state value
+        self.logprobs.append(action_distribution.log_prob(action))
+        self.state_values.append(self.critic(state))  # No detach for proper backprop
+        self.states.append(state)
 
+        return action.item()
+
+    def calculate_loss(self):
+        rewards = []
+        discounted_reward = 0
+        for reward in reversed(self.rewards):
+            discounted_reward = reward + self.gamma * discounted_reward
+            rewards.insert(0, discounted_reward)
+
+        rewards = torch.tensor(rewards)
+        rewards = (rewards - rewards.mean()) / rewards.std() +1e-8
+
+        actor_loss = 0
+        critic_loss = 0
+        for logprob, value, reward in zip(self.logprobs, self.state_values, rewards):
+            advantage = reward - value.item()
+
+            # Actor loss (policy gradient)
+            actor_loss += -logprob * advantage.detach()
+
+            # Critic loss (value function update)
+            critic_loss += F.smooth_l1_loss(value, torch.tensor([reward]))
+
+        return actor_loss, critic_loss
 
     def learn(self):
+        actor_loss, critic_loss = self.calculate_loss()
 
-        actor_loss, critic_loss = self.ActorCritic.calculateLoss()
-
-        # Update actor
-        self.optimizer.zero_grad()
+        # Update actor separately
+        self.actor_optimizer.zero_grad()
         actor_loss.backward()
+        self.actor_optimizer.step()
 
-        # Update critic
+        # Update critic separately
+        self.critic_optimizer.zero_grad()
         critic_loss.backward()
+        self.critic_optimizer.step()
 
-        self.optimizer.step()
-        self.ActorCritic.clearMemory()
+        self.clear_memory()
 
-        self.learn_step_counter += 1
-        self.eps = max((self.eps - self.eps_decay), self.final_eps)
+    def clear_memory(self):
+        del self.logprobs[:]
+        del self.state_values[:]
+        del self.rewards[:]
+        del self.states[:]
 
+    def save_model(self, path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        torch.save({'actor': self.actor.state_dict(),
+                    'critic': self.critic.state_dict()}, path)
 
-    def save_model(self, PATH):
-        T.save(self.Actor.state_dict(), PATH)
-
-    def load_model(self, q_eval_path ):
-        try:
-            self.Actor = T.load(q_eval_path, map_location=self.device)
-        except FileNotFoundError:
-            print(f"Error: Could not find model files at {q_eval_path }")
-        except RuntimeError as e:
-            print(f"Error loading model: {e}")
-
-
-    def save_agent(self, path):
-        directory = os.path.dirname(path)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        with open(path, 'wb') as f:
-            pickle.dump(self, f)
+    def load_model(self, path):
+        if os.path.exists(path):
+            checkpoint = torch.load(path)
+            self.actor.load_state_dict(checkpoint['actor'])
+            self.critic.load_state_dict(checkpoint['critic'])
+        else:
+            print(f"Error: Model file not found at {path}")

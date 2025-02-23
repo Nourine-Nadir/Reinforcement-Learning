@@ -2,61 +2,29 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Categorical
+import torch.optim as optim
+import os, pickle
 
 
-class ActorCritic(nn.Module):
-    def __init__(self):
-        super(ActorCritic, self).__init__()
-        self.affine = nn.Linear(8, 128)
-
-        self.action_layer = nn.Linear(128, 4)
-        self.value_layer = nn.Linear(128, 1)
-
-        self.logprobs = []
-        self.state_values = []
-        self.rewards = []
+class Actor(nn.Module):
+    def __init__(self, input_dim=8, hidden_dim=128, output_dim=4):
+        super(Actor, self).__init__()
+        self.fc = nn.Linear(input_dim, hidden_dim)
+        self.action_layer = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, state):
-        state = torch.from_numpy(state).float()
-        shared_features = F.relu(self.affine(state))
-
-        # For actor
-        action_probs = F.softmax(self.action_layer(shared_features), dim=-1)
-        action_distribution = Categorical(action_probs)
-        action = action_distribution.sample()
-        self.logprobs.append(action_distribution.log_prob(action))
-
-        # For critic
-        state_value = self.value_layer(shared_features.detach())
-        self.state_values.append(state_value)
-
-        return action.item()
+        x = F.relu(self.fc(state))
+        action_probs = F.softmax(self.action_layer(x), dim=-1)
+        return action_probs
 
 
+class Critic(nn.Module):
+    def __init__(self, input_dim=8, hidden_dim=128):
+        super(Critic, self).__init__()
+        self.fc = nn.Linear(input_dim, hidden_dim)
+        self.value_layer = nn.Linear(hidden_dim, 1)
 
-    def calculateLoss(self, gamma=0.99):
-
-            # calculating discounted rewards:
-        rewards = []
-        dis_reward = 0
-        for reward in self.rewards[::-1]:
-            dis_reward = reward + gamma * dis_reward
-            rewards.insert(0, dis_reward)
-
-        # normalizing the rewards:
-        rewards = torch.tensor(rewards)
-        rewards = (rewards - rewards.mean()) / (rewards.std())
-
-        actor_loss = 0
-        critic_loss = 0
-        for logprob, value, reward in zip(self.logprobs, self.state_values, rewards):
-            advantage = reward - value.item()
-            actor_loss += -logprob * advantage.detach()  # Detach advantage
-            critic_loss += F.smooth_l1_loss(value, reward)
-
-        return actor_loss, critic_loss
-
-    def clearMemory(self):
-        del self.logprobs[:]
-        del self.state_values[:]
-        del self.rewards[:]
+    def forward(self, state):
+        x = F.relu(self.fc(state))
+        state_value = self.value_layer(x)
+        return state_value

@@ -9,11 +9,11 @@ Figure 1 : Scheme of reinforcement learning model
 
 Reinforcement learning is a **semi-supervised** learning due to its **timed-delayed** labels.
 
-Labels in RL are modelized as **rewards**, distributed **sporadically**.
+Labels in RL are modeled as **rewards**, distributed **sporadically**.
 
 The **Agent** is the entity who is learning, through the iterations of **states** $s_t$, **actions** $a_t$ and **rewards** $r_t$
 
-Then, how is the **knowledge** modelized? 
+Then, how is the **knowledge** modeled? 
 
 **Policy:**  $\pi(s,a)=P(a=a |s=s)$; given a state $s$, what is the best action $a$ to do?
 
@@ -121,7 +121,7 @@ In model based reinforcement learning, we assume that we have a model for how th
 
 ## Markov Decision Process (Dynamic programming & Bellman optimality):
 
-In MDP, we assume that the environment evolve according to a Markov decision process, it is modelized with this Probability:
+In MDP, we assume that the environment evolve according to a Markov decision process, it is modeled with this Probability:
 
 $P(s',s,a)=Pr(s_{k+1}=s'|s_k=s,a_k=a)$:
 
@@ -374,7 +374,7 @@ So we have an estimated value of our state $s_k$, and after taking an action an 
 
 ---
 
-There are **analogue** of this in **neuroscience** that when **dopamine** is released, it **strengthen** connections between **cells** that has been activated just **before** the dopamine **release**. This is what’s being modelized by **TD Error**; when there is a reward there is a large **TD Error** so things with $1\Delta t$ will get strengthen in the framework.
+There are **analogue** of this in **neuroscience** that when **dopamine** is released, it **strengthen** connections between **cells** that has been activated just **before** the dopamine **release**. This is what’s being modeled by **TD Error**; when there is a reward there is a large **TD Error** so things with $1\Delta t$ will get strengthen in the framework.
 
 ### →TD(n): n-step look ahead
 
