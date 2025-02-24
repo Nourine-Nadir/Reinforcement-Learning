@@ -218,10 +218,8 @@ class GaussianPolicy(nn.Module):
 
         #  Optimizer
         self.optimizer = T.optim.Adam(self.parameters(), lr=self.lr)
-        self.scheduler = T.optim.lr_scheduler.LambdaLR(
-            self.optimizer,
-            lr_lambda=lambda epoch: max(0.999 ** epoch, (self.min_lr / self.lr))
-        )
+        self.scheduler = T.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=1000, eta_min=self.min_lr)
+
 
         #  Device selection
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cuda:1')
@@ -234,8 +232,8 @@ class GaussianPolicy(nn.Module):
 
     def forward(self, obs):
         state = T.tensor(obs, dtype=T.float32, device=self.device)
-        x = self.fc1(state)
-        x = self.fc2(x)
+        x = F.relu(self.fc1(state))
+        x = F.relu(self.fc2(x))
 
         mean = self.mean_linear(x)
         log_std = self.log_std_linear(x)
@@ -253,15 +251,15 @@ class GaussianPolicy(nn.Module):
         y_t = T.tanh(probs)
 
         action = y_t * self.action_scale + self.action_bias
-        log_probs = dist.log_prob(probs).to(self.device)
+        log_probs = dist.log_prob(probs).sum(dim=-1).to(self.device) # Sum across action dimensions
 
         log_probs -= T.log(self.action_scale * (1 - y_t.pow(2)) + EPSILON)
 
         log_probs = log_probs.sum()
 
-        mean = T.tanh(mu) * self.action_scale + self.action_bias
+        mean = mu * self.action_scale + self.action_bias # The mean of a Gaussian distribution doesn’t need rescaling.
 
-        return action, log_probs, mean
+        return action, log_probs, mu # Use mu directly, not tanh(mu)
 
     def lr_decay(self):
         self.scheduler.step()
